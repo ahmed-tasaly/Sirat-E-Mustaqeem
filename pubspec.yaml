@@ -10,7 +10,7 @@ dependencies:
   cached_network_image: ^3.1.0
   cupertino_icons: ^1.0.2
   dartz: ^0.10.0
-  dio: ^4.0.0
+  dio: ^5.0.3
   equatable: ^2.0.3
   flutter:
     sdk: flutter
