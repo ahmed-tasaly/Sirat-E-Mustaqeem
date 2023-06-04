@@ -69,8 +69,7 @@ class TimingController {
 }
 
 /// function to call api and get prayer timings
-Future<Either<Failure, Timing>> getPrayerTiming(
-    double latitude, double longitude,
+getPrayerTiming(double latitude, double longitude,
     {forTomorrow = false}) async {
   /// initiate apiservice class to perform get request to get prayer timing
   ApiService apiService =
@@ -80,7 +79,7 @@ Future<Either<Failure, Timing>> getPrayerTiming(
   Map<String, Object> params = {
     'latitude': latitude,
     'longitude': longitude,
-    'method': 4,
+    'method': 1,
   };
 
   /// current date for getting praying timing from api
@@ -113,22 +112,20 @@ Future<Either<Failure, Timing>> getPrayerTiming(
         timingResponse.data,
       );
 
-      return Right(timing);
+      return timing;
     }
 
     /// otherwise [Failure] is returned
     else {
-      return Left(
-        RemoteFailure(
-            message: timingResponse.statusCode,
-            errorType: DioErrorType.response),
-      );
+      return RemoteFailure(
+          message: timingResponse.statusCode,
+          errorType: DioErrorType.badResponse);
     }
   } on RemoteException catch (e) {
-    String errorMessage = e.dioError.message;
+    String? errorMessage = e.dioError.message;
     int? errorCode;
     for (final error in RemoteErrorCode.remoteErrors) {
-      if (e.dioError.message.contains(error['rawMessage'].toString())) {
+      if (e.dioError.message!.contains(error['rawMessage'].toString())) {
         errorMessage = error['message'].toString();
         errorCode = error['errorCode'] as int;
       }
@@ -136,7 +133,7 @@ Future<Either<Failure, Timing>> getPrayerTiming(
     return Left(
       RemoteFailure(
         message: errorMessage,
-        errorType: DioErrorType.response,
+        errorType: DioErrorType.badResponse,
         errorCode: errorCode,
       ),
     );
